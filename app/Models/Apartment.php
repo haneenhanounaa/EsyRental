@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Apartment extends Model
 {
     //
-    protected $fillable = ['title', 'description', 'location', 'price', 'rooms','number_of_nights', 'num_guests', 'image', 'user_id','client_id'];
+    protected $fillable = ['title', 'description', 'location', 'price', 'rooms','number_of_nights', 'num_guests', 'image', 'user_id','client_id','latitude', 'longitude'];
 
     // Relationship with User (Owner)
     public function owner()
@@ -26,6 +26,7 @@ class Apartment extends Model
     {
         return $this->hasMany(Review::class);
     }
+    
 
     // public function client()
     // {

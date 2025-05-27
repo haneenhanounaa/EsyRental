@@ -1,22 +1,26 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Helpers\SettingsHelper;
 
 use App\Models\Apartment;
 use App\Models\Booking;
 use App\Notifications\BookingConfirmedNotification;
 use App\Notifications\NewBookingNotification;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
-class BookingController extends Controller
+class ClientBookingController extends Controller
 {
+    //
     //
     public function create(Apartment $apartment)
     {
         // return view('website.bookings.create', compact('apartment','apartments'));
         $apartments = Apartment::all(); // or whatever query you use to get all apartments
-        return view('website.bookings.create', compact('apartment', 'apartments'));
+        $settings = SettingsHelper::all();
+
+        return view('website.bookings.create', compact('apartment', 'apartments','settings'));
     }
 
     public function store(Request $request)
@@ -72,4 +76,16 @@ class BookingController extends Controller
         return view('dashboard.bookings.owner-show', compact('booking'));
     }
 
+    public function show(Request $request, $id) // for the notifaication that eliver for client 
+{
+    if ($request->has('notification_id')) {
+        $notification = auth()->user()->notifications()->find($request->notification_id);
+        if ($notification && $notification->unread()) {
+            $notification->markAsRead();
+        }
+    }
+
+    return view('website.index');
+
+}
 }

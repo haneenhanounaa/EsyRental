@@ -13,10 +13,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="{{ asset('website/css/styles.css') }}" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
+    
     <style>
-        .focus-glow:focus {
+           .focus-glow:focus {
             border-color: rgba(13, 110, 253, 0.5);
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
@@ -78,12 +79,30 @@
             height: 32px;
             font-weight: 600;
         }
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .map-container {
+            width: 100%;
+            height: calc(100vh - 136px);
+            /* Adjust 136px based on header + footer height */
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
     </style>
+
 </head>
 
 <body class="d-flex flex-column">
-    <main class="flex-shrink-0">
-
+    <div class="wrapper">
+        <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm"
             style="background: linear-gradient(135deg, #1a1a1a, #2d2d2d) !important;">
             <div class="container px-4 px-lg-5">
@@ -243,85 +262,102 @@
                 </div>
             </div>
         </nav>
-        <!-- Pricing section-->
-        <section class="bg-light py-5">
-            @yield('content')
-        </section>
-    </main>
-    <!-- Footer-->
-    <footer class="bg-dark py-5 mt-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <!-- Main Footer Content - Centered -->
-                <div class="col-lg-8 text-center">
-                    <!-- Copyright -->
-                    <div class="small text-white-50 mb-4">
-                        &copy; {{ date('Y') }} Esay Rental. All rights reserved.
-                    </div>
 
-                    <!-- Contact Card - Now integrated into footer design -->
-                    <div class="bg-dark bg-opacity-25 p-4 rounded-4 border border-secondary mb-4">
-                        <h5 class="text-white mb-3">Have questions?</h5>
-                        <p class="text-white-50 mb-3">
-                            We're here to help you with any inquiries
-                        </p>
-                        <a href="mailto:Haneen@domain.com"
-                            class="btn btn-outline-light btn-sm rounded-pill px-3 mb-3">
-                            <i class="bi bi-envelope me-1"></i> Haneen@domain.com
-                        </a>
+        <!-- Map Container -->
+        {{-- <div class="map-container">
+            <iframe 
+                loading="lazy" 
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBl4DHGkIt2_N1yeFg3Vw-FmC8WXbAeoXI&q=Space+Needle,31.525822,34.447954">
+            </iframe>
+        </div> --}}
+        {{-- @foreach ($apartments as $apartment)
+            <div class="map-container" style="height:900px;" id="map-{{ $apartment->id }}"></div>
 
-                        <!-- Social Links -->
-                        <div class="mt-3">
-                            <h6 class="text-white mb-3">Follow Us</h6>
-                            <div class="d-flex justify-content-center gap-3">
-                                <a href="{{ $settings['twitter'] }}" class="text-white fs-5 hover-primary">
-                                    <i class="bi bi-twitter-x"></i>
-                                </a>
-                                <a href="{{ $settings['facebook'] }}" class="text-white fs-5 hover-primary">
-                                    <i class="bi bi-facebook"></i>
-                                </a>
-                                <a href="{{ $settings['linkedin'] }}" class="text-white fs-5 hover-primary">
-                                    <i class="bi bi-linkedin"></i>
-                                </a>
-                                <a href="{{ $settings['instagram'] ?? '#' }}" class="text-white fs-5 hover-primary">
-                                    <i class="bi bi-instagram"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+            @push('scripts')
+                <script>
+                    function initMap{{ $apartment->id }}() {
+                        const apartmentLocation = {
+                            lat: {{ $apartment->latitude }},
+                            lng: {{ $apartment->longitude }}
+                        };
 
-                    <!-- Additional Links -->
-                    <div class="d-flex flex-wrap justify-content-center gap-3 small">
-                        <a href="#" class="text-white-50 text-decoration-none hover-white">Privacy Policy</a>
-                        <a href="#" class="text-white-50 text-decoration-none hover-white">Terms of Service</a>
-                        <a href="#" class="text-white-50 text-decoration-none hover-white">Contact Us</a>
-                        <a href="#" class="text-white-50 text-decoration-none hover-white">About</a>
+                        const map = new google.maps.Map(document.getElementById('map-{{ $apartment->id }}'), {
+                            zoom: 15,
+                            center: apartmentLocation
+                        });
+
+                        new google.maps.Marker({
+                            position: apartmentLocation,
+                            map: map,
+                            title: "{{ $apartment->title }}",
+                            icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                        });
+                    }
+
+                    document.addEventListener('DOMContentLoaded', function() {
+                        initMap{{ $apartment->id }}();
+                    });
+                </script>
+            @endpush
+        @endforeach --}}
+        <div class="map-container" id="map" style="height: 900px;"></div>
+
+        @push('scripts')
+            <script>
+                function initMap() {
+                    const map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 12,
+                        center: {
+                            lat: 31.5043930,
+                            lng: 34.463680
+                        } // Default center, adjust as needed
+                    });
+
+                    const apartments = @json($apartments);
+
+                    apartments.forEach(apartment => {
+                        if (apartment.latitude && apartment.longitude) {
+                            const position = {
+                                lat: parseFloat(apartment.latitude),
+                                lng: parseFloat(apartment.longitude)
+                            };
+
+                            new google.maps.Marker({
+                                position: position,
+                                map: map,
+                                title: apartment.title,
+                                icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                            });
+                        }
+                    });
+                }
+
+                document.addEventListener('DOMContentLoaded', initMap);
+            </script>
+        @endpush
+
+        <!-- Footer-->
+        <footer class="bg-dark py-4">
+            <div class="container px-5">
+                <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                    <div class="col-auto">
+                        <div class="small m-0 text-white">Copyright &copy; Your Website 2023</div>
                     </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
-    <style>
-        /* Add this to your CSS */
-        .hover-primary:hover {
-            color: var(--bs-primary) !important;
-            transform: translateY(-2px);
-            transition: all 0.2s ease;
-        }
-
-        .hover-white:hover {
-            color: white !important;
-        }
-
-        footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-    </style>
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS-->
-    <script src="js/scripts.js"></script>
+    <script src="{{ asset('website/js/scripts.js') }}"></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBl4DHGkIt2_N1yeFg3Vw-FmC8WXbAeoXI"></script>
+    @stack('scripts')
 </body>
+
 
 </html>

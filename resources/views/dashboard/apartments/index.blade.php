@@ -12,8 +12,8 @@
                     <th>Location</th>
                     <th>Price</th>
                     <th>Rooms</th>
-                    {{-- <th>Number of Nights</th> --}}
                     <th>Guests</th>
+                    <th>Added By</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -31,16 +31,23 @@
                         <td>{{ $apartment->location }}</td>
                         <td>${{ $apartment->price }}</td>
                         <td>{{ $apartment->rooms }}</td>
-                        {{-- <td>{{ $apartment->number_of_nights }}</td> --}}
                         <td>{{ $apartment->num_guests }}</td>
+                        <td>{{ $apartment->owner->name}}</td>
+                        
                         <td>
-                            <a href="{{ route('apartments.edit', $apartment) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('apartments.destroy', $apartment) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm"
+                            @can('update', $apartment)
+                               <a href="{{ route('apartments.edit', $apartment) }}" class="btn btn-warning btn-sm">Edit</a>
+                            @endcan 
+
+                            @can('delete', $apartment)
+ 
+                              <form action="{{ route('apartments.destroy', $apartment) }}" method="POST" style="display:inline;">
+                                 @csrf
+                                 @method('DELETE')
+                                 <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure?')">Delete</button>
-                            </form>
+                              </form>
+                            @endcan  
                         </td>
                     </tr>
                 @endforeach

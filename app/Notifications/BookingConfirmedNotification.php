@@ -66,7 +66,9 @@ class BookingConfirmedNotification extends Notification
             'booking_id' => $this->booking->id,
             'apartment' => $this->booking->apartment->name ?? '',
             'sent_at' => now()->toDateTimeString(),
-            // 'url' => route('notifications.markAsRead', $this->booking->id), // Add this line for URL
+            'url' => route('bookings.show', $this->booking->id),
+
+            //  'url' => route('notifications.markAsRead', $this->booking->id), // Add this line for URL
 
         ];
     }

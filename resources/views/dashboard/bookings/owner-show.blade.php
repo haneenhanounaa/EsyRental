@@ -1,4 +1,4 @@
-@extends('dashboard.index') {{-- Use your admin/owner panel layout --}}
+@extends('dashboard.index') {{-- Use your admin/owner panel layout --}} {{--this layout for Notification--}}
 
 @section('content')
 <div class="container">

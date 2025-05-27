@@ -6,9 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Apartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
+
 
 class ApartmentController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
@@ -17,7 +22,7 @@ class ApartmentController extends Controller
         //
         $apartments = Apartment::all();
         
-            return view('dashboard.apartments.index', compact('apartments'));
+        return view('dashboard.apartments.index', compact('apartments'));
 
     
     }
@@ -46,6 +51,8 @@ class ApartmentController extends Controller
             'rooms' => 'required|integer|min:1',
             'num_guests' => 'required|integer|min:1',
             'image' => 'nullable|image|max:2048',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
         ]);
 
         $data = $request->all();
@@ -74,6 +81,8 @@ class ApartmentController extends Controller
     public function edit(Apartment $apartment)
     {
         //   
+             $this->authorize('update', $apartment);
+
              return view('dashboard.apartments.edit', compact('apartment'));
 
 
@@ -85,6 +94,8 @@ class ApartmentController extends Controller
     public function update(Request $request, Apartment $apartment)
     {
         //
+        $this->authorize('update', $apartment);
+
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required',
@@ -114,6 +125,8 @@ class ApartmentController extends Controller
      */
     public function destroy(Apartment $apartment)
     {
+        $this->authorize('delete', $apartment);
+
         //
         if ($apartment->image) {
             Storage::disk('public')->delete($apartment->image);

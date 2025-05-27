@@ -2,7 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\Apartment;
+use App\Models\User;
+use App\Policies\ApartmentPolicy;
+use App\Policies\UserPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
+        
     }
 
     /**
@@ -19,6 +26,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        
+        Gate::policy(Apartment::class, ApartmentPolicy::class);
+       
+        Gate::policy(User::class, UserPolicy::class);
+
+
         //
     }
 }

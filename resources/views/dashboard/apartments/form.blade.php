@@ -37,3 +37,13 @@
   <label>Image</label>
   <input type="file" name="image" class="form-control">
 </div>
+
+<div class="form-group mb-3">
+  <label for="latitude">Latitude</label>
+  <input type="text" class="form-control" name="latitude" id="latitude" placeholder="e.g. 31.525822" required>
+</div>
+
+<div class="form-group mb-3">
+  <label for="longitude">Longitude</label>
+  <input type="text" class="form-control" name="longitude" id="longitude" placeholder="e.g. 34.447954" required>
+</div>
